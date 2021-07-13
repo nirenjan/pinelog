@@ -22,7 +22,7 @@
 #endif
 
 #ifndef PINELOG_DEFAULT_LEVEL
-#define PINELOG_DEFAULT_LEVEL LOG_LVL_ERROR
+#define PINELOG_DEFAULT_LEVEL PINELOG_LVL_ERROR
 #endif
 
 /**********************************************************************
@@ -126,7 +126,7 @@ int pinelog_get_level(void)
 
 int pinelog_set_level(int level)
 {
-    if (level < LOG_LVL_NONE || level > LOG_LVL_TRACE) {
+    if (level < PINELOG_LVL_NONE || level > PINELOG_LVL_TRACE) {
         return EINVAL;
     }
 
@@ -147,8 +147,8 @@ void pinelog_log_message(int level, const char *file, int line, const char *fmt,
     }
 
     /* Cap the log level */
-    if (level > LOG_LVL_TRACE) {
-        level = LOG_LVL_TRACE;
+    if (level > PINELOG_LVL_TRACE) {
+        level = PINELOG_LVL_TRACE;
     }
 
     /* Validate and set output stream */

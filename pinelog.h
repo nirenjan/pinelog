@@ -18,6 +18,7 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -106,6 +107,10 @@ int pinelog_get_level(void);
  *
  * @returns None
  */
+#if HAVE_FUNC_ATTRIBUTE_FORMAT
+__attribute__((format(printf, 4, 5)))
+#endif
+
 void pinelog_log_message(int level, const char *file, int line, const char *fmt, ...);
 
 #define PINELOG_FATAL(fmt, ...) do { \
