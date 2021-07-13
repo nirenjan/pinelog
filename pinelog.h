@@ -54,9 +54,9 @@ enum {
 };
 
 /**
- * @brief Initialize the logging library and set the defaults
+ * @brief Set the default log level and output stream
  */
-void log_init_defaults(void);
+void log_set_defaults(void);
 
 /**
  * @brief Set the output stream. Must be a FILE pointer.

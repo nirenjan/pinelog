@@ -15,6 +15,7 @@ autom4te.cache
 m4
 compile
 config.*
+!config.h.in
 configure
 depcomp
 install-sh

@@ -6,12 +6,66 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include "config.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <time.h>
 #include <errno.h>
 
 #include "pinelog.h"
+
+/**********************************************************************
+ * Configure defaults
+ *********************************************************************/
+#ifndef PINELOG_DEFAULT_STREAM
+#define PINELOG_DEFAULT_STREAM stdout
+#endif
+
+#ifndef PINELOG_DEFAULT_LEVEL
+#define PINELOG_DEFAULT_LEVEL LOG_LVL_ERROR
+#endif
+
+/**********************************************************************
+ * Configure logging parameters
+ *********************************************************************/
+#ifndef PINELOG_SHOW_DATE
+#define PINELOG_SHOW_DATE 0
+#endif
+
+#ifndef PINELOG_SHOW_LEVEL
+#define PINELOG_SHOW_LEVEL 0
+#endif
+
+#ifndef PINELOG_SHOW_BACKTRACE
+#define PINELOG_SHOW_BACKTRACE 0
+#endif
+
+/**********************************************************************
+ * Configure level strings
+ *********************************************************************/
+#ifndef PINELOG_FATAL
+#define PINELOG_FATAL "FATAL"
+#endif
+
+#ifndef PINELOG_ERROR
+#define PINELOG_ERROR "ERROR"
+#endif
+
+#ifndef PINELOG_WARNING
+#define PINELOG_WARNING "WARNING"
+#endif
+
+#ifndef PINELOG_INFO
+#define PINELOG_INFO "INFO"
+#endif
+
+#ifndef PINELOG_DEBUG
+#define PINELOG_DEBUG "DEBUG"
+#endif
+
+#ifndef PINELOG_TRACE
+#define PINELOG_TRACE "TRACE"
+#endif
 
 /**********************************************************************
  * Global variables
@@ -21,13 +75,16 @@
 static FILE *output_stream = NULL;
 
 /** Default logging level */
-static int log_level = LOG_LVL_ERROR;
+static int log_level = PINELOG_DEFAULT_LEVEL;
 
 /* Initialize defaults */
-void log_init_defaults(void)
+#if HAVE_FUNC_ATTRIBUTE_CONSTRUCTOR
+__attribute__((constructor))
+#endif
+void log_set_defaults(void)
 {
-    output_stream = stdout;
-    log_level = LOG_LVL_ERROR;
+    output_stream = PINELOG_DEFAULT_STREAM;
+    log_level = PINELOG_DEFAULT_LEVEL;
 }
 
 int log_set_output_stream(FILE *stream)
@@ -76,48 +133,6 @@ int log_set_level(int level)
     log_level = level;
     return 0;
 }
-
-/**********************************************************************
- * Configure logging parameters
- *********************************************************************/
-#ifndef PINELOG_SHOW_DATE
-#define PINELOG_SHOW_DATE 0
-#endif
-
-#ifndef PINELOG_SHOW_LEVEL
-#define PINELOG_SHOW_LEVEL 0
-#endif
-
-#ifndef PINELOG_SHOW_BACKTRACE
-#define PINELOG_SHOW_BACKTRACE 0
-#endif
-
-/**********************************************************************
- * Configure level strings
- *********************************************************************/
-#ifndef PINELOG_FATAL
-#define PINELOG_FATAL "FATAL"
-#endif
-
-#ifndef PINELOG_ERROR
-#define PINELOG_ERROR "ERROR"
-#endif
-
-#ifndef PINELOG_WARNING
-#define PINELOG_WARNING "WARNING"
-#endif
-
-#ifndef PINELOG_INFO
-#define PINELOG_INFO "INFO"
-#endif
-
-#ifndef PINELOG_DEBUG
-#define PINELOG_DEBUG "DEBUG"
-#endif
-
-#ifndef PINELOG_TRACE
-#define PINELOG_TRACE "TRACE"
-#endif
 
 /**********************************************************************
  * Log the message to the output stream
