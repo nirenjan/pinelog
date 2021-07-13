@@ -19,6 +19,7 @@
 #define LOGGING_H
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,31 +33,31 @@ extern "C" {
  */
 enum {
     /** No messages will be logged */
-    LOG_LVL_NONE = -1,
+    PINELOG_LVL_NONE = -1,
 
     /** Only fatal messages will be logged */
-    LOG_LVL_FATAL,
+    PINELOG_LVL_FATAL,
 
     /** Error messages. This is the default log level */
-    LOG_LVL_ERROR,
+    PINELOG_LVL_ERROR,
 
     /** Warning messages */
-    LOG_LVL_WARNING,
+    PINELOG_LVL_WARNING,
 
     /** Informational messages */
-    LOG_LVL_INFO,
+    PINELOG_LVL_INFO,
 
     /** Debug messages */
-    LOG_LVL_DEBUG,
+    PINELOG_LVL_DEBUG,
 
     /** Trace messages */
-    LOG_LVL_TRACE,
+    PINELOG_LVL_TRACE,
 };
 
 /**
  * @brief Set the default log level and output stream
  */
-void log_set_defaults(void);
+void pinelog_set_defaults(void);
 
 /**
  * @brief Set the output stream. Must be a FILE pointer.
@@ -65,7 +66,7 @@ void log_set_defaults(void);
  *
  * @returns 0 on success, EINVAL if the pointer is not valid.
  */
-int log_set_output_stream(FILE *stream);
+int pinelog_set_output_stream(FILE *stream);
 
 /**
  * @brief Set the output file.
@@ -75,7 +76,7 @@ int log_set_output_stream(FILE *stream);
  * @returns 0 on success, EINVAL if the filename pointer is not valid, other
  * error if the file could not be opened for writing.
  */
-int log_set_output_file(const char *file);
+int pinelog_set_output_file(const char *file);
 
 /**
  * @brief Set the logging level
@@ -84,63 +85,63 @@ int log_set_output_file(const char *file);
  *
  * @returns 0 on success, EINVAL if the level is not valid
  */
-int log_set_level(int level);
+int pinelog_set_level(int level);
 
 /**
  * @brief Get the logging level
  *
  * @returns the configured logging level
  */
-int log_get_level(void);
+int pinelog_get_level(void);
 
 /**
  * @brief Log a message to the logger
  *
  * This is the actual function that logs the message. The application should
  * never need to call this directly, but instead, should always use the
- * \code LOG_* macros.
+ * \code PINELOG_* macros.
  *
  * @param[in]   level   Level to log the message at
  * @param[in]   fmt     Format string
  *
  * @returns None
  */
-void log_message(int level, const char *file, int line, const char *fmt, ...);
+void pinelog_log_message(int level, const char *file, int line, const char *fmt, ...);
 
-#define LOG_FATAL(fmt, ...) do { \
-    if (LOG_LVL_FATAL <= log_get_level()) { \
-        log_message(LOG_LVL_FATAL, __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
+#define PINELOG_FATAL(fmt, ...) do { \
+    if (PINELOG_LVL_FATAL <= pinelog_get_level()) { \
+        pinelog_log_message(PINELOG_LVL_FATAL, __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
     } \
     exit(1); \
 } while (0)
 
-#define LOG_ERROR(fmt, ...) do { \
-    if (LOG_LVL_ERROR <= log_get_level()) { \
-        log_message(LOG_LVL_ERROR, __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
+#define PINELOG_ERROR(fmt, ...) do { \
+    if (PINELOG_LVL_ERROR <= pinelog_get_level()) { \
+        pinelog_log_message(PINELOG_LVL_ERROR, __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
     } \
 } while (0)
 
-#define LOG_WARN(fmt, ...) do { \
-    if (LOG_LVL_WARNING <= log_get_level()) { \
-        log_message(LOG_LVL_WARNING, __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
+#define PINELOG_WARN(fmt, ...) do { \
+    if (PINELOG_LVL_WARNING <= pinelog_get_level()) { \
+        pinelog_log_message(PINELOG_LVL_WARNING, __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
     } \
 } while(0)
 
-#define LOG_INFO(fmt, ...) do { \
-    if (LOG_LVL_INFO <= log_get_level()) { \
-        log_message(LOG_LVL_INFO, __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
+#define PINELOG_INFO(fmt, ...) do { \
+    if (PINELOG_LVL_INFO <= pinelog_get_level()) { \
+        pinelog_log_message(PINELOG_LVL_INFO, __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
     } \
 } while(0)
 
-#define LOG_DEBUG(fmt, ...) do { \
-    if (LOG_LVL_DEBUG <= log_get_level()) { \
-        log_message(LOG_LVL_DEBUG, __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
+#define PINELOG_DEBUG(fmt, ...) do { \
+    if (PINELOG_LVL_DEBUG <= pinelog_get_level()) { \
+        pinelog_log_message(PINELOG_LVL_DEBUG, __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
     } \
 } while(0)
 
-#define LOG_TRACE(fmt, ...) do { \
-    if (LOG_LVL_TRACE <= log_get_level()) { \
-        log_message(LOG_LVL_TRACE, __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
+#define PINELOG_TRACE(fmt, ...) do { \
+    if (PINELOG_LVL_TRACE <= pinelog_get_level()) { \
+        pinelog_log_message(PINELOG_LVL_TRACE, __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
     } \
 } while(0)
 

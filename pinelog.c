@@ -81,13 +81,13 @@ static int log_level = PINELOG_DEFAULT_LEVEL;
 #if HAVE_FUNC_ATTRIBUTE_CONSTRUCTOR
 __attribute__((constructor))
 #endif
-void log_set_defaults(void)
+void pinelog_set_defaults(void)
 {
     output_stream = PINELOG_DEFAULT_STREAM;
     log_level = PINELOG_DEFAULT_LEVEL;
 }
 
-int log_set_output_stream(FILE *stream)
+int pinelog_set_output_stream(FILE *stream)
 {
     if (stream == NULL) {
         return EINVAL;
@@ -103,7 +103,7 @@ int log_set_output_stream(FILE *stream)
     return 0;
 }
 
-int log_set_output_file(const char *file)
+int pinelog_set_output_file(const char *file)
 {
     FILE *stream;
     if (file == NULL) {
@@ -116,15 +116,15 @@ int log_set_output_file(const char *file)
         return errno;
     }
 
-    return log_set_output_stream(stream);
+    return pinelog_set_output_stream(stream);
 }
 
-int log_get_level(void)
+int pinelog_get_level(void)
 {
     return log_level;
 }
 
-int log_set_level(int level)
+int pinelog_set_level(int level)
 {
     if (level < LOG_LVL_NONE || level > LOG_LVL_TRACE) {
         return EINVAL;
@@ -137,7 +137,7 @@ int log_set_level(int level)
 /**********************************************************************
  * Log the message to the output stream
  *********************************************************************/
-void log_message(int level, const char *file, int line, const char *fmt, ...)
+void pinelog_log_message(int level, const char *file, int line, const char *fmt, ...)
 {
     va_list ap;
 
@@ -191,4 +191,6 @@ void log_message(int level, const char *file, int line, const char *fmt, ...)
     va_start(ap, fmt);
     vfprintf(output_stream, fmt, ap);
     va_end(ap);
+    // Append a trailing newline to flush the log message
+    fputs("\n", output_stream);
 }
