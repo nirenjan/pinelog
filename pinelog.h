@@ -20,7 +20,9 @@
 
 #include "config.h"
 #include <stdio.h>
+#ifndef PINELOG_TEST
 #include <stdlib.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -59,6 +61,15 @@ enum {
  * @brief Set the default log level and output stream
  */
 void pinelog_set_defaults(void);
+
+#ifdef PINELOG_TEST
+/**
+ * @brief Get the pointer to the output stream. Only used in test harness.
+ *
+ * @returns FILE pointer to output stream
+ */
+FILE * pinelog_get_output_stream(void);
+#endif
 
 /**
  * @brief Set the output stream. Must be a FILE pointer.
@@ -113,11 +124,16 @@ __attribute__((format(printf, 4, 5)))
 
 void pinelog_log_message(int level, const char *file, int line, const char *fmt, ...);
 
+// Test harness will redefine pinelog_exit
+#ifndef PINELOG_TEST
+#define pinelog_exit exit
+#endif
+
 #define PINELOG_FATAL(fmt, ...) do { \
     if (PINELOG_LVL_FATAL <= pinelog_get_level()) { \
         pinelog_log_message(PINELOG_LVL_FATAL, __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
     } \
-    exit(1); \
+    pinelog_exit(1); \
 } while (0)
 
 #define PINELOG_ERROR(fmt, ...) do { \

@@ -43,28 +43,28 @@
 /**********************************************************************
  * Configure level strings
  *********************************************************************/
-#ifndef PINELOG_FATAL
-#define PINELOG_FATAL "FATAL"
+#ifndef PINELOG_FATAL_STR
+#define PINELOG_FATAL_STR "FATAL"
 #endif
 
-#ifndef PINELOG_ERROR
-#define PINELOG_ERROR "ERROR"
+#ifndef PINELOG_ERROR_STR
+#define PINELOG_ERROR_STR "ERROR"
 #endif
 
-#ifndef PINELOG_WARNING
-#define PINELOG_WARNING "WARNING"
+#ifndef PINELOG_WARNING_STR
+#define PINELOG_WARNING_STR "WARNING"
 #endif
 
-#ifndef PINELOG_INFO
-#define PINELOG_INFO "INFO"
+#ifndef PINELOG_INFO_STR
+#define PINELOG_INFO_STR "INFO"
 #endif
 
-#ifndef PINELOG_DEBUG
-#define PINELOG_DEBUG "DEBUG"
+#ifndef PINELOG_DEBUG_STR
+#define PINELOG_DEBUG_STR "DEBUG"
 #endif
 
-#ifndef PINELOG_TRACE
-#define PINELOG_TRACE "TRACE"
+#ifndef PINELOG_TRACE_STR
+#define PINELOG_TRACE_STR "TRACE"
 #endif
 
 /**********************************************************************
@@ -102,6 +102,13 @@ int pinelog_set_output_stream(FILE *stream)
     output_stream = stream;
     return 0;
 }
+
+#ifdef PINELOG_TEST
+FILE * pinelog_get_output_stream(void)
+{
+    return output_stream;
+}
+#endif
 
 int pinelog_set_output_file(const char *file)
 {
@@ -151,41 +158,46 @@ void pinelog_log_message(int level, const char *file, int line, const char *fmt,
         level = PINELOG_LVL_TRACE;
     }
 
-    /* Validate and set output stream */
+    #if !HAVE_FUNC_ATTRIBUTE_CONSTRUCTOR
+    /*
+     * Validate and set output stream. Only necessary if the compiler doesn't
+     * support the constructor attribute
+     */
     if (output_stream == NULL) {
-        output_stream = stdout;
+        output_stream = PINELOG_DEFAULT_STREAM;
     }
+    #endif
 
     #if PINELOG_SHOW_DATE
     do {
         time_t t;
         struct tm *tmp;
-        char date_string[20];
+        char date_string[30];
         t = time(NULL);
         tmp = localtime(&t);
         strftime(date_string, sizeof(date_string), "%F %T ", tmp);
-        fputs(date_string, out_stream);
+        fputs(date_string, output_stream);
     } while (0);
     #endif
 
     #if PINELOG_SHOW_LEVEL
     do {
         static const char *level_strings[] = {
-            PINELOG_FATAL,
-            PINELOG_ERROR,
-            PINELOG_WARNING,
-            PINELOG_INFO,
-            PINELOG_DEBUG,
-            PINELOG_TRACE,
+            PINELOG_FATAL_STR,
+            PINELOG_ERROR_STR,
+            PINELOG_WARNING_STR,
+            PINELOG_INFO_STR,
+            PINELOG_DEBUG_STR,
+            PINELOG_TRACE_STR,
         };
 
-        fputs(level_strings[level], out_stream);
-        fputs(": ", out_stream);
-    } while (0)
+        fputs(level_strings[level], output_stream);
+        fputs(": ", output_stream);
+    } while (0);
     #endif
 
     #if PINELOG_SHOW_BACKTRACE
-        fprintf(out_stream, "%s:%d ", file, line);
+        fprintf(output_stream, "%s:%d ", file, line);
     #endif
 
     va_start(ap, fmt);

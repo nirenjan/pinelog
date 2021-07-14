@@ -18,3 +18,25 @@ libpinelog_la_SOURCES = pinelog.c
 libpinelog_la_CFLAGS = @PINELOG_CFLAGS@ $(WARN_CFLAGS)
 libpinelog_la_LDFLAGS = $(WARN_LDFLAGS)
 
+
+test_SRCFILES = test_pinelog.c $(libpinelog_la_SOURCES)
+test_CFLAGS = \
+	-DPINELOG_FATAL_STR='"F"' \
+	-DPINELOG_ERROR_STR='"E"' \
+	-DPINELOG_WARNING_STR='"W"' \
+	-DPINELOG_INFO_STR='"I"' \
+	-DPINELOG_DEBUG_STR='"D"' \
+	-DPINELOG_TRACE_STR='"T"' \
+	-DPINELOG_DEFAULT_LEVEL=PINELOG_LVL_TRACE \
+	-DPINELOG_DEFAULT_STREAM=stderr \
+	-DPINELOG_TEST
+
+LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) $(top_srcdir)/tap-driver.sh
+TESTS = \
+	test_ts_lvl_tr
+
+check_PROGRAMS = $(TESTS)
+test_ts_lvl_tr_SOURCES = $(test_SRCFILES)
+test_ts_lvl_tr_CFLAGS = $(WARN_CFLAGS) $(test_CFLAGS) \
+	-DPINELOG_SHOW_DATE=1 -DPINELOG_SHOW_LEVEL=1 -DPINELOG_SHOW_BACKTRACE=1
+test_ts_lvl_tr_LDFLAGS = $(WARN_LDFLAGS)
