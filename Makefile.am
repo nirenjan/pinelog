@@ -33,10 +33,52 @@ test_CFLAGS = \
 
 LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) $(top_srcdir)/tap-driver.sh
 TESTS = \
-	test_ts_lvl_tr
+	test_ts_lvl_tr \
+	test_ts_lvl_notr \
+	test_ts_nolvl_tr \
+	test_ts_nolvl_notr \
+	test_nots_lvl_tr \
+	test_nots_lvl_notr \
+	test_nots_nolvl_tr \
+	test_nots_nolvl_notr
 
 check_PROGRAMS = $(TESTS)
 test_ts_lvl_tr_SOURCES = $(test_SRCFILES)
 test_ts_lvl_tr_CFLAGS = $(WARN_CFLAGS) $(test_CFLAGS) \
 	-DPINELOG_SHOW_DATE=1 -DPINELOG_SHOW_LEVEL=1 -DPINELOG_SHOW_BACKTRACE=1
 test_ts_lvl_tr_LDFLAGS = $(WARN_LDFLAGS)
+
+test_ts_lvl_notr_SOURCES = $(test_SRCFILES)
+test_ts_lvl_notr_CFLAGS = $(WARN_CFLAGS) $(test_CFLAGS) \
+	-DPINELOG_SHOW_DATE=1 -DPINELOG_SHOW_LEVEL=1 -DPINELOG_SHOW_BACKTRACE=0
+test_ts_lvl_notr_LDFLAGS = $(WARN_LDFLAGS)
+
+test_ts_nolvl_tr_SOURCES = $(test_SRCFILES)
+test_ts_nolvl_tr_CFLAGS = $(WARN_CFLAGS) $(test_CFLAGS) \
+	-DPINELOG_SHOW_DATE=1 -DPINELOG_SHOW_LEVEL=0 -DPINELOG_SHOW_BACKTRACE=1
+test_ts_nolvl_tr_LDFLAGS = $(WARN_LDFLAGS)
+
+test_ts_nolvl_notr_SOURCES = $(test_SRCFILES)
+test_ts_nolvl_notr_CFLAGS = $(WARN_CFLAGS) $(test_CFLAGS) \
+	-DPINELOG_SHOW_DATE=1 -DPINELOG_SHOW_LEVEL=0 -DPINELOG_SHOW_BACKTRACE=0
+test_ts_nolvl_notr_LDFLAGS = $(WARN_LDFLAGS)
+
+test_nots_lvl_tr_SOURCES = $(test_SRCFILES)
+test_nots_lvl_tr_CFLAGS = $(WARN_CFLAGS) $(test_CFLAGS) \
+	-DPINELOG_SHOW_DATE=0 -DPINELOG_SHOW_LEVEL=1 -DPINELOG_SHOW_BACKTRACE=1
+test_nots_lvl_tr_LDFLAGS = $(WARN_LDFLAGS)
+
+test_nots_lvl_notr_SOURCES = $(test_SRCFILES)
+test_nots_lvl_notr_CFLAGS = $(WARN_CFLAGS) $(test_CFLAGS) \
+	-DPINELOG_SHOW_DATE=0 -DPINELOG_SHOW_LEVEL=1 -DPINELOG_SHOW_BACKTRACE=0
+test_nots_lvl_notr_LDFLAGS = $(WARN_LDFLAGS)
+
+test_nots_nolvl_tr_SOURCES = $(test_SRCFILES)
+test_nots_nolvl_tr_CFLAGS = $(WARN_CFLAGS) $(test_CFLAGS) \
+	-DPINELOG_SHOW_DATE=0 -DPINELOG_SHOW_LEVEL=0 -DPINELOG_SHOW_BACKTRACE=1
+test_nots_nolvl_tr_LDFLAGS = $(WARN_LDFLAGS)
+
+test_nots_nolvl_notr_SOURCES = $(test_SRCFILES)
+test_nots_nolvl_notr_CFLAGS = $(WARN_CFLAGS) $(test_CFLAGS) \
+	-DPINELOG_SHOW_DATE=0 -DPINELOG_SHOW_LEVEL=0 -DPINELOG_SHOW_BACKTRACE=0
+test_nots_nolvl_notr_LDFLAGS = $(WARN_LDFLAGS)
