@@ -15,7 +15,7 @@ noinst_LTLIBRARIES = libpinelog.la
 
 # pinelog logging library
 libpinelog_la_SOURCES = pinelog.c
-libpinelog_la_CFLAGS = @PINELOG_CFLAGS@ $(WARN_CFLAGS)
+libpinelog_la_CFLAGS = @PINELOG_CFLAGS@ $(WARN_CFLAGS) -I $(top_builddir)
 libpinelog_la_LDFLAGS = $(WARN_LDFLAGS)
 
 
@@ -29,7 +29,7 @@ test_CFLAGS = \
 	-DPINELOG_TRACE_STR='"T"' \
 	-DPINELOG_DEFAULT_LEVEL=PINELOG_LVL_TRACE \
 	-DPINELOG_DEFAULT_STREAM=stderr \
-	-DPINELOG_TEST
+	-DPINELOG_TEST -I $(top_builddir)
 
 LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) $(top_srcdir)/tap-driver.sh
 TESTS = \
