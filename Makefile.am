@@ -9,7 +9,8 @@ ACLOCAL_AMFLAGS = -I m4
 # Extra files that need to be in the distribution
 EXTRA_DIST = \
 	LICENSE \
-	README.md
+	README.md \
+	pinelog.h
 
 noinst_LTLIBRARIES = libpinelog.la
 
@@ -17,7 +18,6 @@ noinst_LTLIBRARIES = libpinelog.la
 libpinelog_la_SOURCES = pinelog.c
 libpinelog_la_CFLAGS = @PINELOG_CFLAGS@ $(WARN_CFLAGS) -I $(top_builddir)
 libpinelog_la_LDFLAGS = $(WARN_LDFLAGS)
-
 
 test_SRCFILES = test_pinelog.c $(libpinelog_la_SOURCES)
 test_CFLAGS = \
