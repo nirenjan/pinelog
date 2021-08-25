@@ -98,9 +98,16 @@ static int test_setup(int level, int filter, const char *file, int line)
         }
 
         if (PINELOG_SHOW_BACKTRACE) {
+            char * basename = strrchr(file, '/');
+            if (basename != NULL) {
+                basename++;
+            } else {
+                // Override the const
+                basename = (char *)file;
+            }
             expected_len += snprintf(&expected_output[expected_len],
                                      sizeof(expected_output) - expected_len,
-                                     "%s:%d ", file, line);
+                                     "%s:%d ", basename, line);
         }
 
         return 1;
