@@ -98,7 +98,13 @@ static int test_setup(int level, int filter, const char *file, int line)
         }
 
         if (PINELOG_SHOW_BACKTRACE) {
-            char * basename = strrchr(file, '/');
+            char * basename = NULL;
+            #if defined __has_builtin
+            #if __has_builtin(__builtin_strrchr)
+            basename = strrchr(file, '/');
+            #endif
+            #endif
+
             if (basename != NULL) {
                 basename++;
             } else {
