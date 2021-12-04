@@ -10,17 +10,17 @@ ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = \
 	LICENSE \
 	README.md \
-	pinelog.h
+	src/pinelog.h
 
 noinst_LTLIBRARIES = libpinelog.la
 
 # pinelog logging library
-libpinelog_la_SOURCES = pinelog.c
+libpinelog_la_SOURCES = src/pinelog.c
 libpinelog_la_CFLAGS = @PINELOG_CFLAGS@ $(WARN_CFLAGS) -I $(top_builddir)
 libpinelog_la_LDFLAGS = $(WARN_LDFLAGS)
 
-test_SRCFILES = test_pinelog.c $(libpinelog_la_SOURCES)
-bench_SRCFILES = bench_pinelog.c $(libpinelog_la_SOURCES)
+test_SRCFILES = test/test_pinelog.c $(libpinelog_la_SOURCES)
+bench_SRCFILES = test/bench_pinelog.c $(libpinelog_la_SOURCES)
 test_CFLAGS = \
 	-DPINELOG_FATAL_STR='"F"' \
 	-DPINELOG_ERROR_STR='"E"' \
@@ -30,7 +30,7 @@ test_CFLAGS = \
 	-DPINELOG_TRACE_STR='"T"' \
 	-DPINELOG_DEFAULT_LEVEL=PINELOG_LVL_TRACE \
 	-DPINELOG_DEFAULT_STREAM=stderr \
-	-DPINELOG_TEST -I $(top_builddir)
+	-DPINELOG_TEST -I $(top_builddir) -I $(top_srcdir)/src
 
 LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) $(top_srcdir)/tap-driver.sh --comments
 TESTS = \
