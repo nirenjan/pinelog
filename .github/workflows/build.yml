@@ -1,0 +1,47 @@
+name: Build/Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: ${{ join(matrix.*, '/') }}
+    runs-on: ${{ matrix.os }}
+    continue-on-error: "!${{ startsWith(matrix.os, 'ubuntu-') }}"
+    env:
+      CC: ${{ matrix.cc }}
+
+    strategy:
+      matrix:
+        os:
+        - ubuntu-18.04
+        - ubuntu-20.04
+        - macos-10.15
+        - macos-11
+        - windows-2019
+        - windows-2022
+        cc:
+        - gcc
+        - clang
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Generate build scripts
+      run: ./autogen.sh
+
+    - name: Configure
+      run: ./configure
+
+    - name: Build
+      run: make V=0
+
+    - name: Test
+      run: make V=0 check
+
+    - name: Distcheck
+      run: make distcheck
