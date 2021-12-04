@@ -10,7 +10,7 @@ jobs:
   build:
     name: ${{ join(matrix.*, '/') }}
     runs-on: ${{ matrix.os }}
-    continue-on-error: "!${{ startsWith(matrix.os, 'ubuntu-') }}"
+    continue-on-error: "${{ !startsWith(matrix.os, 'ubuntu-') }}"
     env:
       CC: ${{ matrix.cc }}
 
