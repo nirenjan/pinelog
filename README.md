@@ -127,7 +127,7 @@ pinelog_set_output_file("/var/log/app.log");
 Pinelog uses an opinionated logging format that is fixed as follows. Fields
 within `[]` are optional and controlled by build time flags.
 
-    [2021-07-14 11:08:04 ][ERROR: ][./test_pinelog.c:108 ][module-name: ]formatted message.
+    [2021-07-14 11:08:04 ][ERROR: ][./test_pinelog.c:108 ][module-name: ]formatted message\n
 
 The program can be controlled by the following preprocessor flags, all of which
 default to `0` (disabled). Set the flag to `1` to enable it.
@@ -143,6 +143,9 @@ Module name will always be displayed, if it is not the root module.
 Set these flags by using the `-D` compiler argument, .e.g.
 `-DPINELOG_SHOW_LEVEL=1 -DPINELOG_SHOW_DATE=1`
 
+Note that Pinelog will always add a newline after the message, so the format
+string does not need to and should not specify one.
+
 ### Level strings
 
 The application can control the level strings displayed by means of preprocessor
@@ -157,6 +160,9 @@ definitions.
 * `PINELOG_DEBUG_STR`
 * `PINELOG_TRACE_STR`
 
+Note that these strings are not internationalized, and will be printed as
+configured, regardless of the chosen locale.
+
 ### Example
 
 ```
@@ -169,13 +175,17 @@ By default, Pinelog will write the individual components of the log output,
 i.e., date, log level, backtrace, module and log message individually to the
 output stream. The drawback of this is that if Pinelog is used in a
 multithreaded application, then the messages from multiple threads may be
-interleaved. In order to avoid this, you can define `PINELOG_BUFFER_SZ` to a
-positive value. This should be of sufficient size such that the largest log
-message can fit into this buffer, along with the individual components
-(timestamp, log level, etc.). A reasonable starting point for this is 256 bytes.
+interleaved. In order to reduce the chances of this happening, you can define
+`PINELOG_BUFFER_SZ` to a positive value. This should be of sufficient size such
+that the largest log message can fit into this buffer, along with the individual
+components (timestamp, log level, etc.). A reasonable starting point for this is
+256 bytes.
 
 Note that this will result in a greater use of stack space, so applications with
-limited stack space should not use this, or they risk a stack overflow.
+limited stack space should not use this, or they risk a stack overflow. Finally,
+note that the `write` system call is not guaranteed to be atomic, so you may
+still see interleaved data, especially if you have a large value configured for
+`PINELOG_BUFFER_SZ`.
 
 ### Usage
 
@@ -190,3 +200,9 @@ Add the following definition to your CFLAGS when building Pinelog
 Pinelog is intended to be integrated into your application source tree, either
 by means of including the sources directly, or by including the repository as
 a Git submodule or subtree.
+
+Pinelog uses the autotools framework and includes preset `configure.ac` and
+`Makefile.am` files. These include unit tests to ensure that Pinelog is behaving
+as expected. However, you are free to use any build framework, since the
+entirety of Pinelog is contained within a single source file with an associated
+header.
